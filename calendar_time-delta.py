@@ -1,10 +1,5 @@
 #!/bin/python3
 
-import math
-import os
-import random
-import re
-import sys
 import calendar
 from datetime import date
 
@@ -12,7 +7,7 @@ def month_no(month):
     month_list = ['january','february','march','april','may','june','july','august','september','october','november','december']
     for i in month_list:
         if month.lower() in i:
-            return month_list.index(i)
+            return(month_list.index(i)+1)
 
 # Complete the time_delta function below.
 def time_delta(t1, t2):
@@ -25,25 +20,28 @@ def time_delta(t1, t2):
     date1 = date(int(t1[3]),m1,int(t1[1]))
     date2 = date(int(t2[3]),m2,int(t2[1]))
 
-    days_diff = abs((date1-date2).days)*24*3600
+    days_diff = ((date1-date2).days)*24*3600
     
     time1=list(map(int, t1[4].split(':')))
     time2 = list(map(int, t2[4].split(':')))
-    time_diff = abs(time1[0]-time2[0])*3600 + abs(time1[1]-time2[1])*60 + abs(time1[2]-time2[2])
-
+    time_diff = (time1[0]-time2[0])*3600 + (time1[1]-time2[1])*60 + (time1[2]-time2[2])
+    
     if t1[-1][0]==t2[-1][0]:
-        zone_diff = abs(int(t1[-1][1:3]) - int(t2[-1][1:3]))*3600 + abs(int(t1[-1][3:5]) - int(t2[-1][3:5]))*60
+        zone_diff = abs(int(t1[-1][1:3]) - int(t2[-1][1:3]))*3600 + (abs(int(t1[-1][3:5]) - int(t2[-1][3:5])))*60
         diff = days_diff + time_diff + zone_diff
-
+    
     else:
-        zone_diff = abs(int(t1[-1][1:3]) + int(t2[-1][1:3]))*3600 + abs(int(t1[-1][3:5]) + int(t2[-1][3:5]))*60
-        diff = days_diff + time_diff - zone_diff
+        zone_diff = abs(int(t1[-1][1:3]) + int(t2[-1][1:3]))*3600 + (abs(int(t1[-1][3:5]) + int(t2[-1][3:5])))*60
+    
+        if t1[-1][0]=='-':
+            diff = days_diff + time_diff + zone_diff
+        elif t1[-1][0]=='+':
+            diff = days_diff + time_diff - zone_diff
 
     
     return str(diff)
 
 if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
 
     t = int(input())
 
@@ -53,7 +51,4 @@ if __name__ == '__main__':
         t2 = input()
 
         delta = time_delta(t1, t2)
-
-        fptr.write(delta + '\n')
-
-    fptr.close()
+        print(delta)
